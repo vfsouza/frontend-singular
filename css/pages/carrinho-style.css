@@ -1,0 +1,13 @@
+.carrinho-img {
+    height: 180px;
+    width: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.metodo {
+    width: 35%;
+}
+.compra-card {
+    max-height: 300px;
+}

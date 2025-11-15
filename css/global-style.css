@@ -1,0 +1,48 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Container principal */
+.container-fluid {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 0;
+}
+
+/* Header fixo no topo */
+header {
+    box-shadow: 0 -2px 12px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Main ocupa todo espaço disponível */
+#root {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+/* Footer sempre no final */
+footer {
+    flex-shrink: 0;
+    background-color: #343a40;
+    color: white;
+    margin-top: auto;
+}
+
+.btn:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+* {
+    margin: 0 !important;
+    padding: 0;
+}
