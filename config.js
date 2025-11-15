@@ -1,0 +1,1 @@
+window.APP_CONFIG = { API_URL: 'https://backend-singular-production.up.railway.app/' };
