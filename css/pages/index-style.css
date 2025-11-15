@@ -6,5 +6,24 @@
     img {
         height: 2.2rem;
     }
+    background-color: transparent;
+    &:hover {
+        background-color: #eee;
+    }
     padding: 0;
+}
+
+.login {
+    padding: 12px 8px 10px 14px;
+    border-radius: 50%;
+}
+
+.carrinho {
+    padding: 12px 11px 10px 11px;
+    border-radius: 50%;
+}
+
+.card-img {
+    height: 250px;
+    object-fit: cover;
 }

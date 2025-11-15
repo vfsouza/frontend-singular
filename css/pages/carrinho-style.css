@@ -8,6 +8,13 @@
 .metodo {
     width: 35%;
 }
+
 .compra-card {
-    max-height: 300px;
+    height: 300px;
+}
+
+.divisor {
+    width: 99%;
+    box-shadow: 0 -18px 2px 1px rgba(0, 0, 0, 0.15);
+    border-radius: 100%;
 }

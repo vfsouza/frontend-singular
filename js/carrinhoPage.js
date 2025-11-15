@@ -1,4 +1,7 @@
+import {navegarPara} from "./routesManager.js";
+
 export function carrinhoPage() {
+
     // const carrinho = {
     //     'id': 1,
     //     'clienteid': 1,
@@ -46,6 +49,7 @@ export function carrinhoPage() {
     const htmlContent = `
         <div class="container mt-5">
             <h1 class="mb-4">Meu Carrinho</h1>
+            <div class="divisor"></div>
             <div class="row">
                 <div id="carrinhoItems" class="col-6">
                     
@@ -61,8 +65,9 @@ export function carrinhoPage() {
                                 <option value="3">Cartão de Débito</option>
                             </select>
                         </div>
-                        <div class="row justify-content-end mt-auto mb-2">
-                            <button class="col-3 btn btn-primary">Comprar</button>
+                        <div class="row mt-auto mb-2 align-items-center">
+                            <h5 class="col-9">Valor final: R$ <span id="total"></span></h5>
+                            <button onclick="comprar()" class="col-3 btn btn-primary">Comprar</button>
                         </div>
                     </div>
                 </div>
@@ -74,9 +79,23 @@ export function carrinhoPage() {
     construirCarrinho();
 }
 
+function comprar() {
+    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+        alert('Você precisa estar logado para comprar!')
+        navegarPara('/login')
+    }
+}
+
 function construirCarrinho() {
     const carrinho = JSON.parse(localStorage.getItem('carrinho'));
     let carrinhoHtml = ``;
+    let total = 0;
+    carrinho['items'].forEach(item => {
+        total += item.quantidade * item.produto.preco;
+    });
+    atualizarValorTotal(total);
+    $('#total').html(total.toFixed(2));
+
     carrinho['items'].forEach((item, index) => {
         carrinhoHtml += `
             <div>
@@ -86,7 +105,7 @@ function construirCarrinho() {
                             <div class="col-6 d-flex flex-column">
                                 <div class="row">
                                     <h5 class="card-title">${item.produto.nome}</h5>
-                                    <p class="card-text">${item.produto.preco}</p>
+                                    <p class="card-text mt-2">Subtotal: R$ ${item.produto.preco * item.quantidade}</p>
                                 </div>
                                 <div class="row w-50 mt-auto">
                                     <div class="btn-group my-3 p-0" role="group" aria-label="Basic example">
@@ -97,14 +116,14 @@ function construirCarrinho() {
                                 </div>
                             </div>
                             <div class="col-6 text-end">
-                                <img class="carrinho-img" src=${item.produto.imageurl} alt=${item.produto.categoria}>
+                                <img class="carrinho-img" src=${item.produto.imagemUri} alt=${item.produto.categoria}>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         `
-    })
+    });
     $('#carrinhoItems').html(carrinhoHtml);
 }
 
@@ -113,6 +132,12 @@ function removerProduto(index) {
     carrinho.items.splice(index, 1);
     localStorage.setItem('carrinho', JSON.stringify(carrinho));
     construirCarrinho();
+}
+
+function atualizarValorTotal(valorTotal = 0) {
+    const carrinho = JSON.parse(localStorage.getItem('carrinho'));
+    carrinho.valorTotal = valorTotal
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
 }
 
 function aumentarQuantidade(index) {
@@ -139,3 +164,4 @@ function diminuirQuantidade(index) {
 window.removerProduto = removerProduto;
 window.aumentarQuantidade = aumentarQuantidade;
 window.diminuirQuantidade = diminuirQuantidade;
+window.comprar = comprar;

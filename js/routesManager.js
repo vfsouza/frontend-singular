@@ -41,8 +41,7 @@ function verificarLogin() {
     const isLoggedIn = sessionStorage.getItem('isLoggedIn');
 
     if (!isLoggedIn || isLoggedIn !== 'true') {
-        // Não está logado, redirecionar para login
-        navegarPara('login');
+        navegarPara('/login');
         return false;
     }
 
@@ -97,8 +96,10 @@ export function navegarPara(url = '/', adicionarHistorico = true) {
     carregarCSS(rotaConfig.css);
 
     // Renderizar página
-    const rootHtml = rotaConfig.render();
-    renderizarRoot(rootHtml);
+    $('#root').fadeOut(200, function() {
+        $(this).html(rotaConfig.render()).fadeIn(200);
+        verificarUsuarioLogado();
+    });
 
     // Adicionar ao histórico se necessário
     if (adicionarHistorico) {
@@ -111,17 +112,6 @@ export function navegarPara(url = '/', adicionarHistorico = true) {
 
     // Scroll para o topo
     window.scrollTo(0, 0);
-}
-
-/**
- * Renderiza o conteúdo HTML no elemento root
- * @param {string} rootHtml - HTML a ser renderizado
- */
-export function renderizarRoot(rootHtml) {
-    $('#root').fadeOut(200, function() {
-        $(this).html(rootHtml).fadeIn(200);
-        verificarUsuarioLogado();
-    });
 }
 
 /**
