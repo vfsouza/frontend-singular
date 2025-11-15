@@ -13,7 +13,7 @@ export function homePage() {
 }
 
 async function construirProdutos() {
-    const response = await fetch('http://localhost:8080/produto');
+    const response = await fetch(`${window.APP_CONFIG.API_URL}/produto`);
     const produtos = await response.json();
     sessionStorage.setItem('produtos', JSON.stringify(produtos));
 

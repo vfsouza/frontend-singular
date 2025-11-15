@@ -124,7 +124,7 @@ $(document).on('click', '.submit', async (e) => {
     const senha = $('input[type="password"]').val();
 
     const emailCodificado = encodeURIComponent(email);
-    const response = await fetch(`http://localhost:8080/cliente/email/${emailCodificado}`)
+    const response = await fetch(`${window.APP_CONFIG.API_URL}/cliente/email/${emailCodificado}`)
     if (!response.ok) {
         if (response.status === 404) {
             alert('Email não encontrado!');
