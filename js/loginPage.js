@@ -79,7 +79,7 @@ async function criarConta() {
     }
 
     try {
-        const response = await fetch('http://localhost:8080/cliente', {
+        const response = await fetch(`${window.APP_CONFIG.API_URL}/cliente`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
