@@ -1,7 +1,7 @@
 import {navegarPara} from "./routesManager.js";
 
 export function loginPage() {
-    return `
+    $('#root').html(`
         <div class="container mt-5">
             <h1 class="row mb-4">Login</h1>
             <form class="row">
@@ -23,7 +23,7 @@ export function loginPage() {
                                 <h5 class="modal-title" id="modalLabel">New message</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body criar-cliente-modal-1">
                                 <form>
                                     <div class="mb-3">
                                         <label for="criar-nome" class="col-form-label">Nome:</label>
@@ -43,9 +43,43 @@ export function loginPage() {
                                     </div>
                                 </form>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
-                                <button onclick="criarConta()" type="button" class="btn btn-primary">Criar conta</button>
+                            <div class="modal-body criar-cliente-modal-2" style="display: none">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-4 mb-3">
+                                            <label for="criar-cep" class="col-form-label">CEP:</label>
+                                            <input onfocusout="consultarCep()" type="text" class="form-control" id="criar-cep" placeholder="12345678">
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <label for="criar-cidade" class="col-form-label">Cidade:</label>
+                                            <input disabled type="text" class="form-control" id="criar-cidade">
+                                        </div>
+                                        <div class="col-2 mb-3">
+                                            <label for="criar-estado" class="col-form-label">Estado:</label>
+                                            <input disabled type="text" class="form-control" id="criar-estado">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label for="criar-rua" class="col-form-label">Rua:</label>
+                                            <input disabled type="text" class="form-control" id="criar-rua">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4 mb-3">
+                                            <label for="criar-numero" class="col-form-label">Número:</label>
+                                            <input type="text" class="form-control" id="criar-numero">
+                                        </div>
+                                        <div class="col-8 mb-3">
+                                            <label for="criar-complemento" class="col-form-label">Complemento:</label>
+                                            <input type="text" class="form-control" id="criar-complemento">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer gap-3">
+                                <button id="btn-voltar" onclick="voltarModal()" type="button" class="btn btn-secondary">Voltar</button>
+                                <button id="btn-proximo" onclick="proximoModal()" type="button" class="btn btn-primary">Próximo</button>
                             </div>
                         </div>
                     </div>
@@ -53,16 +87,69 @@ export function loginPage() {
                 <button type="submit" class="btn btn-primary submit">Entrar</button>
             </div>
         </div>
-    `;
+    `);
 }
 
-async function criarConta() {
+async function consultarCep() {
+    const cep = $('#criar-cep').val();
+
+    const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const endereco = await response.json();
+
+    console.log(endereco);
+
+    $('#criar-cidade').val(endereco.localidade);
+    $('#criar-estado').val(endereco.uf);
+    $('#criar-rua').val(endereco.logradouro);
+}
+
+function voltarModal() {
+    const modal1 = $('.criar-cliente-modal-1');
+    const modal2 = $('.criar-cliente-modal-2');
+    const btnVoltar = $('#btn-voltar');
+    const btnProximo = $('#btn-proximo');
+
+    if (modal2.is(':visible')) {
+        modal2.hide();
+        modal1.show();
+
+        btnProximo.text('Próximo');
+
+        btnVoltar.removeAttr('data-bs-dismiss');
+    } else {
+        btnVoltar.attr('data-bs-dismiss', 'modal');
+
+        $('.btn-close').click();
+
+        setTimeout(() => {
+            resetarModal();
+        }, 300);
+    }
+}
+
+function resetarModal() {
+    // Limpar campos
+    $('#criar-nome, #criar-email, #criar-password, #criar-password-conf').val('');
+    $('#criar-cep, #criar-rua, #criar-numero, #criar-complemento').val('');
+    $('#criar-cidade, #criar-estado').val('');
+
+    // Voltar para etapa 1
+    $('.criar-cliente-modal-2').hide();
+    $('.criar-cliente-modal-1').show();
+
+    // Resetar UI
+    $('#etapa-numero').text('1');
+    $('#btn-proximo').text('Próximo');
+}
+
+function proximoModal() {
+    const btnProximo = $('#btn-proximo');
+
     const nome = $('#criar-nome').val();
     const email = $('#criar-email').val();
     const senha = $('#criar-password').val();
     const senhaConf = $('#criar-password-conf').val();
 
-    // Validações
     if (!nome || !email || !senha || !senhaConf) {
         alert('Preencha todos os campos!');
         return;
@@ -78,17 +165,51 @@ async function criarConta() {
         return;
     }
 
+    if (btnProximo.text() === 'Cadastrar') {
+        const cep = $('#criar-cep').val();
+        const rua = $('#criar-rua').val();
+        const numero = $('#criar-numero').val();
+        const complemento = $('#criar-complemento').val();
+        const cidade = $('#criar-cidade').val();
+        const estado = $('#criar-estado').val();
+
+        if (!cep || !rua || !numero || !complemento || !cidade || !estado) {
+            alert('Preencha todos os campos!');
+            return;
+        }
+
+        const usuario = {
+            nome: nome,
+            email: email,
+            senha: senha,
+            endereco: {
+                cep: cep,
+                rua: rua,
+                numero: numero,
+                complemento: numero,
+                cidade: cidade,
+                estado: estado,
+                pais: 'Brasil'
+            }
+        }
+
+        criarConta(usuario).then();
+        return;
+    }
+
+    btnProximo.text('Cadastrar');
+    $('.criar-cliente-modal-1').hide();
+    $('.criar-cliente-modal-2').show();
+}
+
+async function criarConta(usuario) {
     try {
         const response = await fetch(`${window.APP_CONFIG.API_URL}/cliente`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                nome: nome,
-                email: email,
-                senha: senha
-            })
+            body: JSON.stringify(usuario)
         });
 
         if (!response.ok) {
@@ -156,3 +277,7 @@ $(document).on('click', '.submit', async (e) => {
 });
 
 window.criarConta = criarConta;
+window.proximoModal = proximoModal;
+window.consultarCep = consultarCep;
+window.voltarModal = voltarModal;
+window.resetarModal = resetarModal;
