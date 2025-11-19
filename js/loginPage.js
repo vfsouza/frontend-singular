@@ -20,7 +20,7 @@ export function loginPage() {
                     <div class="modal-dialog modal-dialog-centered mx-auto">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel">New message</h5>
+                                <h5 class="modal-title" id="modalLabel">Criar conta</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body criar-cliente-modal-1">
@@ -256,18 +256,23 @@ $(document).on('click', '.submit', async (e) => {
     }
 
     const cliente = await response.json();
-    console.log('Cliente encontrado:');
+    console.log('Cliente encontrado:', cliente, cliente.isAdmin);
 
     if (email === cliente.email && senha === cliente.senha) {
         const usuario = {
             id: cliente.id,
             email: email,
             senha: senha,
+            isAdmin: cliente.isAdmin,
         };
 
         sessionStorage.setItem('usuarioLogado', JSON.stringify(usuario));
         sessionStorage.setItem('isLoggedIn', 'true');
-        console.log('Salvou no storage:', sessionStorage.getItem('usuarioLogado'));
+        sessionStorage.setItem('isAdmin', JSON.stringify(cliente.isAdmin));
+
+        let carrinho = JSON.parse(localStorage.getItem('carrinho'));
+        carrinho.clienteId = cliente.id;
+        localStorage.setItem('carrinho', JSON.stringify(carrinho));
 
         alert('Login realizado com sucesso!');
         navegarPara('/');

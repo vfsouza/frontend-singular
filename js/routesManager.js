@@ -4,6 +4,7 @@ import {loginPage} from "./loginPage.js";
 import {produtoPage} from "./produtoPage.js";
 import {carrinhoPage} from "./carrinhoPage.js";
 import {verificarUsuarioLogado} from "./main.js";
+import {adminPage} from "./adminPage.js";
 
 const rotas = {
     '/': {
@@ -25,11 +26,16 @@ const rotas = {
     '/carrinho': {
         render: carrinhoPage,
         css: 'carrinho-style'
+    },
+    '/admin': {
+        render: adminPage,
+        css: 'admin-style'
     }
 }
 
 // Rotas que precisam de autenticação
-const rotasProtegidas = ['/conta'];
+const rotasProtegidasLogin = ['/conta'];
+const rotasProtegidasAdmin = ['/admin'];
 
 // Variável para armazenar o CSS atual
 let cssAtual = null;
@@ -84,9 +90,15 @@ function carregarCSS(arquivo) {
  */
 export function navegarPara(url = '/', adicionarHistorico = true) {
     // Verificar se a rota precisa de autenticação
-    if (rotasProtegidas.includes(url) && !verificarLogin()) {
+    if (rotasProtegidasLogin.includes(url) && !verificarLogin()) {
         alert('Você precisa fazer login para acessar esta página!');
         url = '/login';
+    }
+
+    // Verificar se a rota precisa de role admin
+    if (rotasProtegidasAdmin.includes(url) && !verificarLogin()) {
+        alert('Você precisa ser administrador para acessar esta página!');
+        url = '/';
     }
 
     // Pegar configuração da rota

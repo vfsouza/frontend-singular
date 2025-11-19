@@ -79,11 +79,42 @@ export function carrinhoPage() {
     construirCarrinho();
 }
 
-function comprar() {
+async function comprar() {
     if (sessionStorage.getItem('isLoggedIn') !== 'true') {
         alert('Você precisa estar logado para comprar!')
         navegarPara('/login')
     }
+
+    const carrinho = JSON.parse(localStorage.getItem('carrinho'));
+    const requestCarrinho = {
+        clienteId: carrinho.clienteId,
+        valorTotal: carrinho.valorTotal,
+        compraItemList: [],
+    };
+
+    carrinho.items.forEach(item => {
+        console.log(item);
+        const novoItem = {
+            produtoId: item.produto.id,
+            quantidade: item.quantidade,
+            precoUnitario: item.produto.preco,
+        }
+        requestCarrinho.compraItemList.push(novoItem);
+    })
+
+    console.log(requestCarrinho);
+
+    const response = await fetch(`${window.APP_CONFIG.API_URL}/compra`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestCarrinho)
+        }
+    );
+
+    console.log(await response.json());
 }
 
 function construirCarrinho() {

@@ -2,7 +2,7 @@
     height: 3.5rem;
 }
 
-.carrinho, .login, .conta  {
+.carrinho, .login, .conta, .config  {
     img {
         height: 2.2rem;
     }
@@ -14,7 +14,7 @@
 }
 
 .login {
-    padding: 12px 8px 10px 14px;
+    padding: 12px 9px 10px 13px;
     border-radius: 50%;
 }
 
@@ -26,4 +26,9 @@
 .card-img {
     height: 250px;
     object-fit: cover;
+}
+
+.config, .conta {
+    padding: 12px;
+    border-radius: 50%;
 }
